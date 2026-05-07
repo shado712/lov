@@ -1,153 +1,82 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ماريه وحيدر</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى مارية ❤️</title>
+    <style>
+        :root { --pink: #ff4d6d; --bg: #ffeef2; }
+        body { background: #000; margin: 0; font-family: 'Arial', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        
+        /* شاشة المحادثة */
+        #chat-screen { width: 100%; height: 100%; background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%); display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; }
+        .bubble { max-width: 80%; padding: 12px 18px; border-radius: 20px; margin-bottom: 15px; font-size: 16px; animation: pop 0.4s ease; }
+        .received { background: #333; color: white; align-self: flex-start; }
+        .sent { background: var(--pink); color: white; align-self: flex-end; cursor: pointer; }
+        .link-preview { background: rgba(255,255,255,0.1); border: 1px solid var(--pink); padding: 15px; border-radius: 15px; color: white; align-self: flex-start; cursor: pointer; margin-top: 10px; }
 
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family: "Cairo", sans-serif;
-    }
+        /* شاشة مارية و Hello Kitty */
+        #kitty-screen { display: none; width: 100%; height: 100%; background: var(--bg); position: fixed; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
+        .card { background: white; padding: 30px; border-radius: 40px; box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2); width: 85%; max-width: 350px; text-align: center; }
+        .kitty-gif { width: 160px; margin-bottom: 20px; }
+        h1 { color: var(--pink); font-size: 22px; margin-bottom: 20px; min-height: 60px; }
+        .btn { background: var(--pink); color: white; border: none; padding: 15px; border-radius: 25px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn:active { transform: scale(0.95); }
 
-    body{
-      background:#000;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      overflow:hidden;
-    }
-
-    .chat-box{
-      width:380px;
-      background:#050816;
-      border-radius:30px;
-      padding:20px;
-      box-shadow:0 0 30px rgba(106,90,255,0.3);
-      animation:fadeIn 1.2s ease;
-    }
-
-    .msg{
-      max-width:80%;
-      padding:14px 18px;
-      margin:12px 0;
-      border-radius:25px;
-      font-size:22px;
-      color:white;
-      line-height:1.6;
-      animation:slideUp .7s ease;
-    }
-
-    .left{
-      background:#0f1228;
-      border:2px solid rgba(120,120,255,.2);
-      margin-right:auto;
-    }
-
-    .right{
-      background:#2c2c2c;
-      margin-left:auto;
-    }
-
-    .new-msg{
-      text-align:center;
-      color:#aaa;
-      margin:20px 0;
-      font-size:20px;
-      position:relative;
-    }
-
-    .new-msg::before,
-    .new-msg::after{
-      content:"";
-      position:absolute;
-      top:50%;
-      width:30%;
-      height:1px;
-      background:#666;
-    }
-
-    .new-msg::before{
-      right:0;
-    }
-
-    .new-msg::after{
-      left:0;
-    }
-
-    .link-box{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      background:#080b18;
-      border:2px solid rgba(120,120,255,.2);
-      border-radius:25px;
-      padding:14px 18px;
-      margin-top:15px;
-      color:#8d7bff;
-      font-size:20px;
-    }
-
-    .send-btn{
-      width:50px;
-      height:50px;
-      border-radius:50%;
-      background:#2f2f2f;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      color:white;
-      font-size:24px;
-      margin-right:10px;
-    }
-
-    @keyframes fadeIn{
-      from{
-        opacity:0;
-        transform:scale(.9);
-      }
-      to{
-        opacity:1;
-        transform:scale(1);
-      }
-    }
-
-    @keyframes slideUp{
-      from{
-        opacity:0;
-        transform:translateY(30px);
-      }
-      to{
-        opacity:1;
-        transform:translateY(0);
-      }
-    }
-  </style>
+        @keyframes pop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        .heart-bg { position: absolute; color: var(--pink); opacity: 0.2; animation: float 3s infinite linear; }
+        @keyframes float { from { transform: translateY(100vh); } to { transform: translateY(-10vh); } }
+    </style>
 </head>
 <body>
 
-  <div class="chat-box">
-
-    <div class="msg left">
-      حيدر عندي هدية الج كلش راح تحبيها 💜
+    <div id="chat-screen">
+        <div class="bubble received">مارية موجودة؟ 🌸</div>
+        <div class="bubble sent" id="reply-btn" onclick="firstReply()">اي وضايعة عوفني حيدر 😔</div>
+        <div id="next-chat" style="display:none;">
+            <div class="bubble received">شلون اكدر اعوفج؟ شوفييي 😍</div>
+            <div class="link-preview" onclick="openKitty()">
+                <div style="font-size: 12px; color: var(--pink);">https://maria-love.org/hider</div>
+                <div style="font-weight: bold; margin-top: 5px;">مارية.. اضغطي هنا 👆❤️</div>
+            </div>
+        </div>
     </div>
 
-    <div class="msg right">
-      الله شنو هي؟ 🌚
+    <div id="kitty-screen">
+        <div class="card">
+            <img src="https://media.tenor.com/vH97Zf_9680AAAAi/hello-kitty-flower.gif" id="main-img" class="kitty-gif">
+            <h1 id="main-text">هلو مارية.. زهرتي الحلوة 🌸</h1>
+            <button class="btn" id="main-btn" onclick="nextStep()">أمر حيدوري؟</button>
+        </div>
     </div>
 
-    <div class="new-msg">New Messages</div>
+    <script>
+        function firstReply() {
+            document.getElementById('next-chat').style.display = 'block';
+        }
 
-    <div class="link-box">
-      <span>🔗 https://marie-haider.app</span>
-      <div class="send-btn">➤</div>
-    </div>
+        function openKitty() {
+            document.getElementById('kitty-screen').style.display = 'flex';
+        }
 
-  </div>
+        let step = 0;
+        const story = [
+            { t: "عندي سؤال الج مارية.. مستعدة؟ 🙈", b: "اسألني حيدر", i: "https://media.tenor.com/K_f9_9Obeo0AAAAi/hello-kitty-blushing.gif" },
+            { t: "تحبيني لو لأأ؟ ماريةةة 🥺👉👈", b: "مدري / هاه؟", i: "https://media.tenor.com/OnY_qNqE4p8AAAAi/hello-kitty-shy.gif" },
+            { t: "اذا تحبيني حيدر.. دوسي على القلب ❤️", b: "❤️ أحبك حيدوري ❤️", i: "https://media.tenor.com/V7_5zWv-A60AAAAi/hello-kitty-love.gif" },
+            { t: "كلشي ولا ضوجتج مارية.. اعشقج واحبج حيل ❤️🥰", b: "تم إرسال الحب ❤️", i: "https://media.tenor.com/j_6W_Xq-S0AAAAAi/hello-kitty-sanrio.gif" }
+        ];
 
+        function nextStep() {
+            if (step < story.length) {
+                document.getElementById('main-text').innerText = story[step].t;
+                document.getElementById('main-btn').innerText = story[step].b;
+                document.getElementById('main-img').src = story[step].i;
+                step++;
+            } else {
+                alert("حيدر يكولج: انتي أغلى شي عنده ❤️");
+            }
+        }
+    </script>
 </body>
 </html>

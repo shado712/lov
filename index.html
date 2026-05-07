@@ -3,78 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلى مارية ❤️</title>
+    <title>اعتذار من حيدر لمارية</title>
     <style>
-        :root { --pink: #ff4d6d; --bg: #ffeef2; }
-        body { background: #000; margin: 0; font-family: 'Arial', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        :root { --dark-blue: #1a1a2e; --soft-pink: #ff758f; }
+        body { 
+            background: linear-gradient(180deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            margin: 0; font-family: 'Arial', sans-serif; 
+            display: flex; align-items: center; justify-content: center; 
+            height: 100vh; overflow: hidden; color: white;
+        }
         
-        /* شاشة المحادثة */
-        #chat-screen { width: 100%; height: 100%; background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%); display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; }
-        .bubble { max-width: 80%; padding: 12px 18px; border-radius: 20px; margin-bottom: 15px; font-size: 16px; animation: pop 0.4s ease; }
-        .received { background: #333; color: white; align-self: flex-start; }
-        .sent { background: var(--pink); color: white; align-self: flex-end; cursor: pointer; }
-        .link-preview { background: rgba(255,255,255,0.1); border: 1px solid var(--pink); padding: 15px; border-radius: 15px; color: white; align-self: flex-start; cursor: pointer; margin-top: 10px; }
+        /* شاشة المحادثة الحزينة */
+        #chat-screen { width: 100%; height: 100%; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; }
+        .bubble { max-width: 85%; padding: 15px; border-radius: 20px; margin-bottom: 20px; font-size: 17px; line-height: 1.5; animation: fadeIn 1s ease; }
+        .received { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); align-self: flex-start; }
+        .sent { background: var(--soft-pink); color: white; align-self: flex-end; cursor: pointer; font-weight: bold; }
+        
+        /* شاشة الاعتذار (الغروب) */
+        #sorry-screen { 
+            display: none; width: 100%; height: 100%; 
+            background: linear-gradient(to bottom, #200122, #6f0000); /* خلفية غروب حزينة */
+            position: fixed; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        .container { background: rgba(0, 0, 0, 0.5); padding: 30px; border-radius: 30px; border: 1px solid var(--soft-pink); width: 85%; max-width: 400px; backdrop-filter: blur(10px); }
+        .kitty-gif { width: 140px; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--soft-pink)); }
+        h1 { font-size: 20px; color: var(--soft-pink); margin-bottom: 15px; }
+        p { font-size: 16px; line-height: 1.8; color: #eee; margin-bottom: 20px; }
+        .btn { background: var(--soft-pink); color: white; border: none; padding: 15px; border-radius: 25px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 117, 143, 0.4); }
 
-        /* شاشة مارية و Hello Kitty */
-        #kitty-screen { display: none; width: 100%; height: 100%; background: var(--bg); position: fixed; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
-        .card { background: white; padding: 30px; border-radius: 40px; box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2); width: 85%; max-width: 350px; text-align: center; }
-        .kitty-gif { width: 160px; margin-bottom: 20px; }
-        h1 { color: var(--pink); font-size: 22px; margin-bottom: 20px; min-height: 60px; }
-        .btn { background: var(--pink); color: white; border: none; padding: 15px; border-radius: 25px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn:active { transform: scale(0.95); }
-
-        @keyframes pop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-        .heart-bg { position: absolute; color: var(--pink); opacity: 0.2; animation: float 3s infinite linear; }
-        @keyframes float { from { transform: translateY(100vh); } to { transform: translateY(-10vh); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div id="chat-screen">
-        <div class="bubble received">مارية موجودة؟ 🌸</div>
-        <div class="bubble sent" id="reply-btn" onclick="firstReply()">اي وضايعة عوفني حيدر 😔</div>
-        <div id="next-chat" style="display:none;">
-            <div class="bubble received">شلون اكدر اعوفج؟ شوفييي 😍</div>
-            <div class="link-preview" onclick="openKitty()">
-                <div style="font-size: 12px; color: var(--pink);">https://maria-love.org/hider</div>
-                <div style="font-weight: bold; margin-top: 5px;">مارية.. اضغطي هنا 👆❤️</div>
-            </div>
-        </div>
+        <div class="bubble received">مارية.. أدري زعلانه مني وأدري قصرت وياج.. بس والله ما أهون عليّ ضوجتج 😔</div>
+        <div class="bubble sent" onclick="openSorry()">حيدر.. ليش هيج سويت؟ 💔</div>
     </div>
 
-    <div id="kitty-screen">
-        <div class="card">
-            <img src="https://media.tenor.com/vH97Zf_9680AAAAi/hello-kitty-flower.gif" id="main-img" class="kitty-gif">
-            <h1 id="main-text">هلو مارية.. زهرتي الحلوة 🌸</h1>
-            <button class="btn" id="main-btn" onclick="nextStep()">أمر حيدوري؟</button>
+    <div id="sorry-screen">
+        <div class="container">
+            <img src="https://media.tenor.com/OnY_qNqE4p8AAAAi/hello-kitty-shy.gif" id="main-img" class="kitty-gif">
+            <h1 id="main-title">يا أغلى شي بحياتي</h1>
+            <p id="main-text">مارية، انتي مو بس حبيبتي، انتي زهرتي اللي ما أتحمل تذبل.. الدنيا تظلم بعيني لو ضجتي ثانية وحدة.</p>
+            <button class="btn" id="main-btn" onclick="nextStep()">سامحيني حيدوري؟ 🥺</button>
         </div>
     </div>
 
     <script>
-        function firstReply() {
-            document.getElementById('next-chat').style.display = 'block';
-        }
-
-        function openKitty() {
-            document.getElementById('kitty-screen').style.display = 'flex';
+        function openSorry() {
+            document.getElementById('chat-screen').style.display = 'none';
+            document.getElementById('sorry-screen').style.display = 'flex';
         }
 
         let step = 0;
-        const story = [
-            { t: "عندي سؤال الج مارية.. مستعدة؟ 🙈", b: "اسألني حيدر", i: "https://media.tenor.com/K_f9_9Obeo0AAAAi/hello-kitty-blushing.gif" },
-            { t: "تحبيني لو لأأ؟ ماريةةة 🥺👉👈", b: "مدري / هاه؟", i: "https://media.tenor.com/OnY_qNqE4p8AAAAi/hello-kitty-shy.gif" },
-            { t: "اذا تحبيني حيدر.. دوسي على القلب ❤️", b: "❤️ أحبك حيدوري ❤️", i: "https://media.tenor.com/V7_5zWv-A60AAAAi/hello-kitty-love.gif" },
-            { t: "كلشي ولا ضوجتج مارية.. اعشقج واحبج حيل ❤️🥰", b: "تم إرسال الحب ❤️", i: "https://media.tenor.com/j_6W_Xq-S0AAAAAi/hello-kitty-sanrio.gif" }
+        const apologySteps = [
+            { t: "والله العظيم ما كان قصدي أزعلج، أني بدون ضحكتج أضيع.. أنتي النفس مالتي يا مارية ❤️", b: "كمل حيدر..", i: "https://media.tenor.com/K_f9_9Obeo0AAAAi/hello-kitty-blushing.gif" },
+            { t: "أوعدج من اليوم ورايح ما أخلي دمعة تنزل من عينج، وراح أكون لج السند والأمان دائمًا 💍", b: "يعني وعد؟", i: "https://media.tenor.com/V7_5zWv-A60AAAAi/hello-kitty-love.gif" },
+            { t: "مارية.. حيدر يعشقج لحد الموت، وما يقدر يعيش بدونج لحظة.. مسموح لي أرجع أضحكج؟ 🥺", b: "أحبك حيدر.. صافية لبن ❤️", i: "https://media.tenor.com/j_6W_Xq-S0AAAAAi/hello-kitty-sanrio.gif" },
+            { t: "أحلى 'أحبك' سمعتها بحياتي! أنتي ملكة قلبي وحيدر سندج للأبد ❤️🌸", b: "انتهى الزعل 😍", i: "https://media.tenor.com/2m_SAnzXvYgAAAAi/hello-kitty-jet-plane.gif" }
         ];
 
         function nextStep() {
-            if (step < story.length) {
-                document.getElementById('main-text').innerText = story[step].t;
-                document.getElementById('main-btn').innerText = story[step].b;
-                document.getElementById('main-img').src = story[step].i;
+            if (step < apologySteps.length) {
+                document.getElementById('main-text').innerText = apologySteps[step].t;
+                document.getElementById('main-btn').innerText = apologySteps[step].b;
+                document.getElementById('main-img').src = apologySteps[step].i;
                 step++;
             } else {
-                alert("حيدر يكولج: انتي أغلى شي عنده ❤️");
+                document.getElementById('main-title').innerText = "شكراً لأنك بقلبي";
+                document.getElementById('main-text').innerText = "راح نضل سوا للأبد، وماكو شي يفرقنا يا روح حيدر ❤️";
+                document.getElementById('main-btn').style.display = 'none';
             }
         }
     </script>

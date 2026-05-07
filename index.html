@@ -3,77 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اعتذار من حيدر لمارية</title>
+    <title>إلى جنّتي .. أمي</title>
     <style>
-        :root { --dark-blue: #1a1a2e; --soft-pink: #ff758f; }
+        :root { --gold: #d4af37; --deep-red: #800020; --pink: #ffb6c1; }
         body { 
-            background: linear-gradient(180deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            margin: 0; font-family: 'Arial', sans-serif; 
+            background: #000; margin: 0; font-family: 'Cairo', sans-serif; 
             display: flex; align-items: center; justify-content: center; 
             height: 100vh; overflow: hidden; color: white;
         }
-        
-        /* شاشة المحادثة الحزينة */
-        #chat-screen { width: 100%; height: 100%; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; }
-        .bubble { max-width: 85%; padding: 15px; border-radius: 20px; margin-bottom: 20px; font-size: 17px; line-height: 1.5; animation: fadeIn 1s ease; }
-        .received { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); align-self: flex-start; }
-        .sent { background: var(--soft-pink); color: white; align-self: flex-end; cursor: pointer; font-weight: bold; }
-        
-        /* شاشة الاعتذار (الغروب) */
-        #sorry-screen { 
-            display: none; width: 100%; height: 100%; 
-            background: linear-gradient(to bottom, #200122, #6f0000); /* خلفية غروب حزينة */
-            position: fixed; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-        }
-        .container { background: rgba(0, 0, 0, 0.5); padding: 30px; border-radius: 30px; border: 1px solid var(--soft-pink); width: 85%; max-width: 400px; backdrop-filter: blur(10px); }
-        .kitty-gif { width: 140px; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--soft-pink)); }
-        h1 { font-size: 20px; color: var(--soft-pink); margin-bottom: 15px; }
-        p { font-size: 16px; line-height: 1.8; color: #eee; margin-bottom: 20px; }
-        .btn { background: var(--soft-pink); color: white; border: none; padding: 15px; border-radius: 25px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 117, 143, 0.4); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* القلوب المتحركة في الخلفية */
+        .hearts { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .heart { position: absolute; color: rgba(255, 182, 193, 0.4); animation: fall linear infinite; }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* حاوية المحتوى */
+        .container { 
+            position: relative; z-index: 10; background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(15px); padding: 40px; border-radius: 50px; 
+            border: 2px solid var(--gold); width: 85%; max-width: 450px; 
+            text-align: center; box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .mom-img { width: 180px; height: 180px; border-radius: 50%; border: 4px solid var(--gold); margin-bottom: 20px; object-fit: cover; animation: pulse 3s infinite; }
+        
+        h1 { color: var(--gold); font-size: 26px; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        p { font-size: 18px; line-height: 1.8; color: #fff; min-height: 100px; transition: 0.5s; }
+
+        .btn { 
+            background: linear-gradient(45deg, var(--gold), #f9e29c); color: #000; 
+            border: none; padding: 15px 30px; border-radius: 30px; font-size: 18px; 
+            font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 20px; width: 100%;
+        }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--gold); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-    <div id="chat-screen">
-        <div class="bubble received">مارية.. أدري زعلانه مني وأدري قصرت وياج.. بس والله ما أهون عليّ ضوجتج 😔</div>
-        <div class="bubble sent" onclick="openSorry()">حيدر.. ليش هيج سويت؟ 💔</div>
-    </div>
+    <div class="hearts" id="hearts-container"></div>
 
-    <div id="sorry-screen">
-        <div class="container">
-            <img src="https://media.tenor.com/OnY_qNqE4p8AAAAi/hello-kitty-shy.gif" id="main-img" class="kitty-gif">
-            <h1 id="main-title">يا أغلى شي بحياتي</h1>
-            <p id="main-text">مارية، انتي مو بس حبيبتي، انتي زهرتي اللي ما أتحمل تذبل.. الدنيا تظلم بعيني لو ضجتي ثانية وحدة.</p>
-            <button class="btn" id="main-btn" onclick="nextStep()">سامحيني حيدوري؟ 🥺</button>
-        </div>
+    <div class="container">
+        <img src="https://i.pinimg.com/originals/94/3a/0d/943a0d63507663488737f5a60e1d13f9.gif" class="mom-img">
+        <h1 id="title">ست الحبايب ❤️</h1>
+        <p id="text">أمي.. أنتي العطاء الذي لا ينضب، والقلب الذي لا يمل من الحب. وجودكِ في حياتي هو أعظم نعمة من الله.</p>
+        <button class="btn" onclick="nextStep()" id="btn-text">اضغط لترى قلبك</button>
     </div>
 
     <script>
-        function openSorry() {
-            document.getElementById('chat-screen').style.display = 'none';
-            document.getElementById('sorry-screen').style.display = 'flex';
+        // صنع القلوب المتحركة
+        const container = document.getElementById('hearts-container');
+        for (let i = 0; i < 30; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            container.appendChild(heart);
         }
 
         let step = 0;
-        const apologySteps = [
-            { t: "والله العظيم ما كان قصدي أزعلج، أني بدون ضحكتج أضيع.. أنتي النفس مالتي يا مارية ❤️", b: "كمل حيدر..", i: "https://media.tenor.com/K_f9_9Obeo0AAAAi/hello-kitty-blushing.gif" },
-            { t: "أوعدج من اليوم ورايح ما أخلي دمعة تنزل من عينج، وراح أكون لج السند والأمان دائمًا 💍", b: "يعني وعد؟", i: "https://media.tenor.com/V7_5zWv-A60AAAAi/hello-kitty-love.gif" },
-            { t: "مارية.. حيدر يعشقج لحد الموت، وما يقدر يعيش بدونج لحظة.. مسموح لي أرجع أضحكج؟ 🥺", b: "أحبك حيدر.. صافية لبن ❤️", i: "https://media.tenor.com/j_6W_Xq-S0AAAAAi/hello-kitty-sanrio.gif" },
-            { t: "أحلى 'أحبك' سمعتها بحياتي! أنتي ملكة قلبي وحيدر سندج للأبد ❤️🌸", b: "انتهى الزعل 😍", i: "https://media.tenor.com/2m_SAnzXvYgAAAAi/hello-kitty-jet-plane.gif" }
+        const messages = [
+            { t: "أمي..", p: "لو كتبتُ كل لغات العالم لن أصف قطرة من بحر حنانكِ. أنتي الشمس التي تشرق في أيامي الصعبة.", b: "استمر.." },
+            { t: "يا جنّتي في الأرض", p: "تحت قدميكِ وجدنا الراحة، وفي دعائكِ نجد التوفيق. ربي يحفظكِ لي يا تاج رأسي.", b: "كلمة أخيرة" },
+            { t: "أحبكِ يا أمي", p: "اللهم احفظ أمهاتنا وأطل في أعمارهن، وارحم من رحلت منهن واجعل قبرها روضة من رياض الجنة.", b: "آمين يا رب ❤️" }
         ];
 
         function nextStep() {
-            if (step < apologySteps.length) {
-                document.getElementById('main-text').innerText = apologySteps[step].t;
-                document.getElementById('main-btn').innerText = apologySteps[step].b;
-                document.getElementById('main-img').src = apologySteps[step].i;
+            if (step < messages.length) {
+                document.getElementById('title').innerText = messages[step].t;
+                document.getElementById('text').style.opacity = 0;
+                setTimeout(() => {
+                    document.getElementById('text').innerText = messages[step].p;
+                    document.getElementById('text').style.opacity = 1;
+                }, 500);
+                document.getElementById('btn-text').innerText = messages[step].b;
                 step++;
             } else {
-                document.getElementById('main-title').innerText = "شكراً لأنك بقلبي";
-                document.getElementById('main-text').innerText = "راح نضل سوا للأبد، وماكو شي يفرقنا يا روح حيدر ❤️";
-                document.getElementById('main-btn').style.display = 'none';
+                document.getElementById('text').innerHTML = "تم إرسال دعاء لقلب أمك الآن.. <br> اذهب وقبّل يدها ❤️";
+                document.getElementById('btn-text').style.display = 'none';
             }
         }
     </script>

@@ -3,49 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلى مارية</title>
+    <title>محادثة خاصة</title>
     <style>
-        body { background-color: #ffeef2; text-align: center; font-family: 'Arial', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        .container { background: white; padding: 20px; border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); width: 85%; max-width: 350px; position: relative; }
-        img { width: 160px; height: auto; margin-bottom: 20px; border-radius: 10px; }
-        h1 { color: #ff4d6d; font-size: 20px; min-height: 60px; line-height: 1.6; }
-        button { background-color: #ff4d6d; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 20px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; font-weight: bold; }
-        button:hover { background-color: #ff758f; transform: scale(1.05); }
-        .footer { font-size: 12px; color: #adb5bd; margin-top: 15px; }
+        body { 
+            background: linear-gradient(180deg, #6a11cb 0%, #2575fc 100%); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; align-items: center; justify-content: center; 
+            height: 100vh; margin: 0; overflow: hidden; 
+        }
+        .chat-container { width: 90%; max-width: 400px; display: flex; flex-direction: column; }
+        .msg { max-width: 80%; padding: 12px 18px; border-radius: 20px; margin-bottom: 10px; font-size: 16px; line-height: 1.4; position: relative; animation: fadeIn 0.5s ease; }
+        .received { background: #3a3b3c; color: white; align-self: flex-start; border-bottom-right-radius: 5px; }
+        .sent { background: #ff4d6d; color: white; align-self: flex-end; border-bottom-left-radius: 5px; cursor: pointer; }
+        .link-card { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); padding: 15px; border-radius: 15px; color: white; text-align: center; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .link-card:hover { background: rgba(255, 255, 255, 0.2); }
+        
+        /* تصميم موقع Hello Kitty */
+        #kitty-site { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #ffeef2; z-index: 100; text-align: center; padding-top: 50px;
+        }
+        .kitty-img { width: 180px; margin-bottom: 20px; }
+        .pink-btn { background: #ff4d6d; color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="content">
-            <img src="https://media.tenor.com/vH97Zf_9680AAAAi/hello-kitty-flower.gif" id="image">
-            <h1 id="text">مارية موجودة؟ 🌸</h1>
-            <button onclick="nextStep()" id="btn">اي وضايعة عوفني حيدر 😔</button>
+
+    <div class="chat-container" id="chat-box">
+        <div class="msg received">مارية موجودة؟</div>
+        <div class="msg sent" onclick="showReply()">اي وضايعة عوفني حيدر 😔</div>
+        <div id="reply" style="display:none;">
+            <div class="msg received">شلون اكدر اعوفج شوفي؟</div>
+            <div class="link-card" onclick="openKitty()">
+                <div style="font-size: 14px; opacity: 0.8;">مارية/https://lov.page</div>
+                <div style="font-weight: bold; margin-top: 5px;">اضغطي هنا يا زهرتي 🌸</div>
+            </div>
         </div>
-        <div class="footer">صنع بكل حب من حيدر ❤️</div>
+    </div>
+
+    <div id="kitty-site">
+        <img src="https://media.tenor.com/K_f9_9Obeo0AAAAi/hello-kitty-blushing.gif" class="kitty-img">
+        <h1 style="color: #ff4d6d;">هلو مارية.. حيدر يحبج ❤️</h1>
+        <p style="color: #555;">عندي سؤال الج، مستعدة؟</p>
+        <button class="pink-btn" onclick="alert('أحبج مارية! ❤️')">شنو هو؟</button>
     </div>
 
     <script>
-        let step = 0;
-        const data = [
-            { t: "شلون اكدر اعوفج مارية شوفي؟ 🥺", b: "شنو هو؟", i: "https://media.tenor.com/Z45Z1A7_0mUAAAAi/hello-kitty.gif" },
-            { t: "مارية عندي سؤال الججج 🙈", b: "اسألني حيدر", i: "https://media.tenor.com/K_f9_9Obeo0AAAAi/hello-kitty-blushing.gif" },
-            { t: "تحبين حيدر لو لأأ !!؟ 🥺👉👈", b: "مدري / هاه؟", i: "https://media.tenor.com/OnY_qNqE4p8AAAAi/hello-kitty-shy.gif" },
-            { t: "اذا تحبيني دوسي على القلب ❤️", b: "❤️ أحبك حيدوري ❤️", i: "https://media.tenor.com/V7_5zWv-A60AAAAi/hello-kitty-love.gif" },
-            { t: "كلشي ولا ضوجتج مارية.. اعشقج واحبج ❤️🥰", b: "أني هم أعشقك حيدر 🥺", i: "https://media.tenor.com/j_6W_Xq-S0AAAAAi/hello-kitty-sanrio.gif" }
-        ];
-
-        function nextStep() {
-            if (step < data.length) {
-                document.getElementById('text').innerText = data[step].t;
-                document.getElementById('btn').innerText = data[step].b;
-                document.getElementById('image').src = data[step].i;
-                step++;
-            } else {
-                // المشهد الأخير
-                document.getElementById('text').innerText = "تم إرسال الحب لقلب مارية بنجاح! ❤️🌸";
-                document.getElementById('btn').style.display = 'none';
-                document.getElementById('image').src = "https://media.tenor.com/2m_SAnzXvYgAAAAi/hello-kitty-jet-plane.gif";
-            }
+        function showReply() {
+            document.getElementById('reply').style.display = 'block';
+        }
+        function openKitty() {
+            document.getElementById('chat-box').style.display = 'none';
+            document.getElementById('kitty-site').style.display = 'block';
         }
     </script>
 </body>

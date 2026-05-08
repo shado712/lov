@@ -3,170 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلى مارية 👑</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;900&display=swap" rel="stylesheet">
+    <title>إلى ملكة قلبي مارية 👑</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --transition-speed: 0.8s;
-        }
+        :root { --main-bg: #ffe5ec; --main-text: #660708; --btn-bg: #ff4d6d; }
         body {
             margin: 0; font-family: 'Cairo', sans-serif;
             height: 100vh; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; transition: background var(--transition-speed) ease;
-            background-color: #0b0b0b; color: white;
+            overflow: hidden; background: radial-gradient(circle, #ffe5ec, #fff0f3); color: var(--main-text);
         }
 
-        .main-wrapper {
-            width: 100%; max-width: 450px; height: 100vh;
+        /* مطر القلوب بالخلفية */
+        .hearts-bg { position: fixed; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+        .heart-fall { position: absolute; animation: fall linear infinite; color: #ffb3c1; font-size: 20px; }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* حاوية العرض الرئيسية - بدون حدود Border */
+        .container {
+            width: 85%; max-width: 400px; height: 500px;
             position: relative; overflow: hidden;
-            display: flex; flex-direction: column; align-items: center;
-        }
-
-        .slide {
-            position: absolute; width: 100%; height: 100%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateX(100%);
-            z-index: 1;
+            padding: 30px; box-sizing: border-box; text-align: center;
         }
 
-        .slide.active { transform: translateX(0); z-index: 2; }
-        .slide.prev { transform: translateX(-100%); z-index: 1; }
-
-        /* تصميم أنثوي للبطاقة البيضاء */
-        .img-square {
-            width: 280px; height: 280px;
-            border-radius: 40px; /* حواف أكثر انحناءً لتصميم أنثوي */
-            overflow: hidden;
-            background: #fff;
-            box-shadow: 0 15px 40px rgba(255, 143, 163, 0.3); /* توهج وردي ناعم */
+        /* البطاقة البيضاء للملصقات - حواف ناعمة */
+        .sticker-card {
+            width: 250px; height: 250px;
+            background-color: #ffffff;
+            border-radius: 40px; /* حواف أنثوية وناعمة جداً */
             margin-bottom: 25px;
             display: flex; align-items: center; justify-content: center;
-            border: 5px solid #ffdeeb;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(255, 179, 193, 0.4);
+            animation: fadeIn 1s ease;
         }
-        .img-square img { width: 90%; height: 90%; object-fit: contain; }
+        /* حجم الملصق التعبيري الكبير جداً */
+        .sticker-card .big-emoji { font-size: 150px; }
 
-        .interactive-heart {
-            font-size: 110px; cursor: pointer;
-            animation: pulse 0.8s infinite;
-            filter: drop-shadow(0 0 20px #ff4d6d);
-            margin: 30px 0; display: inline-block;
-            pointer-events: auto !important;
-        }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        /* القلب النباض التفاعلي */
+        .heart-icon { font-size: 100px; color: #ff4d6d; cursor: pointer; animation: pulse 0.8s infinite; filter: drop-shadow(0 0 10px #ff4d6d); display: none; margin-bottom: 25px;}
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
-        .content-box { text-align: center; width: 85%; margin-bottom: 35px; }
-        .content-box h1 { font-size: 26px; color: #ff8fa3; margin-bottom: 10px; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        .content-box p { font-size: 18px; line-height: 1.6; color: #f0f0f0; margin: 0; }
+        /* تنسيق النصوص حرة - بدون حدود */
+        .content { min-height: 100px; margin-bottom: 30px; animation: fadeIn 1.2s ease; }
+        .content h1 { font-size: 26px; color: #ff758f; margin-bottom: 10px; font-weight: 900; }
+        .content p { font-size: 18px; line-height: 1.7; color: var(--main-text); margin: 0; font-weight: 600; }
 
-        .btn-action {
-            background: #ff4d6d; color: white; border: none;
-            padding: 14px 55px; border-radius: 50px;
+        /* الأزرار التفاعلية - تصميم أنثوي */
+        .btn-nav {
+            background: var(--btn-bg); color: white; border: none;
+            padding: 15px 45px; border-radius: 50px;
             font-size: 18px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 8px 25px rgba(255, 77, 109, 0.4);
-            transition: 0.3s; pointer-events: auto;
+            box-shadow: 0 8px 15px rgba(255, 77, 109, 0.4);
+            transition: 0.3s ease;
         }
+        .btn-nav:hover { background: #ff758f; transform: translateY(-3px); }
+        .btn-nav:active { transform: scale(0.95); }
 
-        /* الستيكرات العشوائية الجانبية */
-        .random-sticker {
-            position: absolute; width: 60px; height: 60px;
-            pointer-events: none; z-index: 3;
-            animation: popIn 0.5s ease-out;
-        }
-        @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        .hearts-bg { position: fixed; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
-        .heart-unit { position: absolute; animation: drift linear infinite; opacity: 0.6; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div class="hearts-bg" id="hearts"></div>
-    <div class="main-wrapper" id="slider"></div>
+
+    <div class="container" id="main-container">
+        </div>
 
     <script>
-        // مصفوفة البيانات مع تدرج ألوان الخلفية والستيكرات
-        const storyData = [
-            { t: "مارية.. اعتذر 😔", p: "أدري الزعل أخذ مساحة بقلبج، بس والله الدنيا تظلم بعيني لو ضجتي لحظة.", g: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3NueWZvbm41emx0bzR6cjI4dmx2Znd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/v96vXfG1KzE3MvW5sE/giphy.gif", b: "ممكن تسامحيني؟", bg: "#1a1a2e" },
-            { t: "انتي ملكة قلبي 👑", p: "انتي تامرين وحيدر ينفذ. المهم ترجع الضحكة لوجهج المنور.", g: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/VduFvSgSPS2H4XpnhB/giphy.gif", b: "تؤمرين ❤️", bg: "#2d1b33" },
-            { t: "يا وردتي 🌸", p: "انتي الوردة اللي بستاني، وبدونج الأيام ما بيها طعم.", g: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/L4lvBpHWkARu7Aac75/giphy.gif", b: "أحبج 🥺", bg: "#4a264a" },
-            { t: "اضغطي على قلبي ❤️", p: "حتى تعرفين شكد يحبج ويشتاقلج..", g: "", isHeart: true, bg: "#70305a" },
-            { t: "وعد حيدر 💍", p: "أوعدج من اليوم أكون لج السند والأمان دائمًا.", g: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9uH9T34u3U7YUnD/giphy.gif", b: "وعد؟ ✨", bg: "#9e4064" },
-            { t: "يا شمس حياتي ☀️", p: "انتي النور اللي يضوي طريقي. فديتج يا ماريتي.", g: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/Y866z3V6Yf6WqXU8zL/giphy.gif", b: "يا روحي ❤️", bg: "#c75274" },
-            { t: "انتي طفلتي 🧸", p: "مسموح لج تتنفسين وتتدللين، بس لا تبتعدين عني.", g: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/v86vXfG1KzE3MvW5sE/giphy.gif", b: "تدللين ✅", bg: "#e66c85" },
-            { t: "اعشقج هواي", p: "مارية، انتي النفس مالتي والله. أحبج حب ماله حدود.", g: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/VduFvSgSPS2H4XpnhB/giphy.gif", b: "أحبك حيدر ❤️", bg: "#ff8fa3" },
-            { t: "تم الصلح؟ 💍", p: "حيدر ومارية سوا للأبد. الزعل ممنوع من اليوم!", g: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/L4lvBpHWkARu7Aac75/giphy.gif", b: "تم الصلح ✅", bg: "#ffb3c1" },
-            { t: "النهاية السعيدة 💖", p: "يا رب دوم الضحكة على وجهج يا مارية. أحبج!", g: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9uH9T34u3U7YUnD/giphy.gif", b: "أحبك للأبد ❤️", bg: "#ffe5ec" }
+        // مصفوفة البيانات بملصقات كبيرة (Emojis) لكل صفحة
+        const story = [
+            // 1. ترحيب
+            { t: "يا هلا برقوية ✨", p: "رقية البطلة، الثالث متوسط مو مجرد امتحانات، هو أول خطوة حقيقية لرسم مستقبلج العظيم.", e: "🌸", b: "مستعدة؟ ✨" },
+            // 2. فخر حيدر
+            { t: "حيدر فخور بيج هواي", p: "أنتي مو بس أختي، أنتي فخر العائلة. أريدج ترفعين راسنا وتثبتين للكل إن رقية كدها.", e: "👸", b: "كملي القراءة ✨" },
+            // 3. تخيل النتيجة
+            { t: "تخيلي يوم النتيجة 😍", p: "تخيلي فرحة الوالد والوالدة دموع الفرح بعين أبوج وأمج. كل تعب تسهريه هسة يسوى.", e: "🎉", b: "ماكو مستحيل ✨" },
+            // 4. التشجيع على الدراسة
+            { t: "الدراسة سر قوتج 📖", p: "رتبي كتبج، وقولي (أني كدها). رقية ما تنهزم، رقية هي اللي تصنع المعجزات.", e: "👩‍🎓", b: "بقت أيام قليلة ✨" },
+            // 5. القلب التفاعلي (مفاجأة) - لا يوجد ستيكر، يظهر قلب
+            { t: "دكتورة المستقبل ✨", p: "اضغطي على قلبج وشوفي شكد يشتاق للنجاح.. ادرسي لرقية المستقبيلة.", e: "", isHeart: true, b: "دوسي عالقلب 👇" },
+            // 6. الوعد بالنجاح
+            { t: "وعد للنجاح؟ 💍", p: "أريد منج وعد يا رقية، انو متبجين من مادة صعبة، بل تحاولين لحد ما تسيطرين عليها.", e: "🏆", b: "أحبج رقية ❤️" },
+            // 7. الختام
+            { t: "مستقبلج ينتظرج ❤️", p: "انتهى وقت الكلام.. حلمج يصيحج هسة، روحي ادرسي وعيني باردة عليج! أحلى عطلة ننتظرها.", e: "💝", b: "يلا ادرسي ✅" }
         ];
 
         let currentIdx = 0;
-        const slider = document.getElementById('slider');
+        const container = document.getElementById('main-container');
 
-        storyData.forEach((item, i) => {
-            const slide = document.createElement('div');
-            slide.className = `slide ${i === 0 ? 'active' : ''}`;
-            
-            let middleContent = `<div class="img-square"><img src="${item.g}" alt="sticker"></div>`;
-            if (item.isHeart) {
-                middleContent = `<div class="interactive-heart" onclick="nextSlide()">❤️</div>`;
-            }
-
-            slide.innerHTML = `
-                ${middleContent}
-                <div class="content-box">
-                    <h1>${item.t}</h1>
-                    <p>${item.p}</p>
+        // دالة لعرض الصفحة
+        function renderPage() {
+            const data = story[currentIdx];
+            container.innerHTML = `
+                ${data.isHeart ? 
+                    `<div class="heart-icon" style="display: block;" onclick="nextPage()">❤️</div>` : 
+                    `<div class="sticker-card"><div class="big-emoji">${data.e}</div></div>`}
+                <div class="content">
+                    <h1>${data.t}</h1>
+                    <p>${data.p}</p>
                 </div>
-                ${!item.isHeart ? `<button class="btn-action" onclick="nextSlide()">${item.b}</button>` : ''}
+                ${data.isHeart ? '' : `<button class="btn-nav" onclick="nextPage()">${data.b}</button>`}
             `;
-            slider.appendChild(slide);
-        });
-
-        function nextSlide() {
-            const slides = document.querySelectorAll('.slide');
-            if (currentIdx < slides.length - 1) {
-                slides[currentIdx].classList.remove('active');
-                slides[currentIdx].classList.add('prev');
-                currentIdx++;
-                slides[currentIdx].classList.add('active');
-                
-                // تغيير الخلفية
-                document.body.style.backgroundColor = storyData[currentIdx].bg;
-                if (currentIdx > 7) document.body.style.color = "#333"; // تغيير لون الخط لو الخلفية صارت فاتحة
-
-                // إضافة ستيكر عشوائي
-                spawnSticker();
-            } else {
-                alert("تم إرسال كل الحب لقلب مارية! ❤️");
-            }
         }
 
-        // دالة لإنشاء ستيكرات عشوائية تظهر فجأة
-        function spawnSticker() {
-            const stickers = ['🌸', '✨', '💖', '🧸', '🌈', '🍭'];
-            const s = document.createElement('div');
-            s.className = 'random-sticker';
-            s.innerHTML = stickers[Math.floor(Math.random() * stickers.length)];
-            s.style.fontSize = '40px';
-            s.style.left = Math.random() * 80 + 10 + 'vw';
-            s.style.top = Math.random() * 80 + 10 + 'vh';
-            document.body.appendChild(s);
-            setTimeout(() => s.remove(), 1500);
+        // دالة الانتقال للصفحة التالية
+        function nextPage() {
+            if (currentIdx < story.length - 1) {
+                currentIdx++;
+                renderPage();
+            } else {
+                alert("ربي يحفظج يا رقية وينجحج! ❤️");
+                container.innerHTML = `<div class="content"><h1>تم إرسال دعاء النجاح لقلبج ❤️</h1><p>يلا كافي نت، روحي ادرسي!</p></div>`;
+            }
         }
 
         // مطر القلوب
         setInterval(() => {
             const h = document.createElement('div');
-            h.className = 'heart-unit'; h.innerHTML = '💗';
+            h.className = 'heart-fall'; h.innerHTML = '❤️';
             h.style.left = Math.random() * 100 + 'vw';
             h.style.top = '-50px';
+            h.style.fontSize = (Math.random() * 20 + 10) + 'px';
             h.style.animationDuration = (Math.random() * 3 + 3) + 's';
             document.getElementById('hearts').appendChild(h);
             setTimeout(() => h.remove(), 5000);
         }, 400);
 
-        // تعيين لون الخلفية الأول
-        document.body.style.backgroundColor = storyData[0].bg;
+        // عرض أول صفحة
+        renderPage();
     </script>
 </body>
 </html>

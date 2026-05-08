@@ -3,24 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلى مارية 👑</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;900&display=swap" rel="stylesheet">
+    <title>إلى ملكة قلبي مارية 👑</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
     <style>
+        :root { --p1: linear-gradient(135deg, #0f0c29, #302b63, #24243e); --gold: #ffd700; }
         body {
             margin: 0; font-family: 'Cairo', sans-serif;
             height: 100vh; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; background-color: #121212; color: white;
+            overflow: hidden; background: var(--p1); color: white;
         }
 
-        .main-wrapper {
-            width: 100%; max-width: 450px; height: 100vh;
+        /* مطر القلوب بالخلفية */
+        .hearts-bg { position: fixed; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+        .heart-fall { position: absolute; animation: fall linear infinite; color: #ff4d6d; font-size: 20px; }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* حاوية العرض الرئيسية */
+        .main-container {
+            width: 85%; max-width: 400px; height: 550px;
             position: relative; overflow: hidden;
-            display: flex; flex-direction: column; align-items: center;
+            border-radius: 40px; border: 2px solid rgba(255, 215, 0, 0.3);
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
         .slide {
             position: absolute; width: 100%; height: 100%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px; box-sizing: border-box;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateX(100%);
         }
@@ -28,81 +41,86 @@
         .slide.active { transform: translateX(0); }
         .slide.prev { transform: translateX(-100%); }
 
-        /* الصورة المربعة الاحترافية */
-        .img-square {
-            width: 320px; height: 320px;
-            border-radius: 25px;
+        /* البطاقة البيضاء للصور - تم تعديلها لضمان الظهور */
+        .img-card {
+            width: 300px; height: 300px; /* أبعاد ثابتة */
+            background-color: #ffffff; /* خلفية بيضاء */
+            border-radius: 25px; /* حواف دائرية ناعمة */
+            margin-bottom: 25px;
+            display: flex; align-items: center; justify-content: center;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background: #fff;
-            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        .img-square img { width: 100%; height: 100%; object-fit: cover; }
+        .img-card img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* القلب التفاعلي الكبير */
-        .interactive-heart {
-            font-size: 100px;
-            cursor: pointer;
-            animation: pulse 0.8s infinite;
-            filter: drop-shadow(0 0 20px #ff4d6d);
-            margin: 20px 0;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
+        /* القلب التفاعلي النباض */
+        .heart-icon { font-size: 90px; color: #ff4d6d; cursor: pointer; animation: pulse 0.8s infinite; filter: drop-shadow(0 0 10px #ff4d6d); display: none; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
-        .content-box { text-align: center; width: 85%; margin-bottom: 40px; }
-        .content-box h1 { font-size: 24px; color: #ff8fa3; margin-bottom: 10px; }
-        .content-box p { font-size: 18px; line-height: 1.6; color: #e0e0e0; margin: 0; }
+        /* تنسيق النصوص - لا يوجد حدود Border */
+        .content { text-align: center; width: 90%; min-height: 100px; margin-bottom: 30px; }
+        .content h1 { font-size: 24px; color: #ff8fa3; margin-bottom: 10px; }
+        .content p { font-size: 17px; line-height: 1.6; color: #eee; margin: 0; font-weight: 600; }
 
+        /* الأزرار التفاعلية - نص متغير */
         .btn-action {
             background: #ff4d6d; color: white; border: none;
-            padding: 12px 45px; border-radius: 50px;
+            padding: 15px 40px; border-radius: 50px;
             font-size: 18px; font-weight: bold; cursor: pointer;
             box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
             transition: 0.3s;
         }
         .btn-action:active { transform: scale(0.9); }
-
-        .hearts-bg { position: fixed; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
-        .heart-unit { position: absolute; color: rgba(255, 77, 109, 0.4); animation: drift linear infinite; }
-        @keyframes drift { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
     </style>
 </head>
 <body>
 
     <div class="hearts-bg" id="hearts"></div>
-    <div class="main-wrapper" id="slider"></div>
+
+    <div class="main-container" id="slider"></div>
 
     <script>
-        const data = [
-            { t: "مارية.. اعتذر 😔", p: "أدري الزعل أخذ مساحة بقلبج، بس والله الدنيا تظلم بعيني لو ضجتي لحظة.", g: "https://media.tenor.com/b9UaH8B6_OQAAAAi/mochi-peach.gif" },
-            { t: "اضغطي على قلبي ❤️", p: "حتى تعرفين شكد أحبج..", g: "https://media.tenor.com/V7_5zWv-A60AAAAi/hello-kitty-love.gif", isHeart: true },
-            { t: "وعد من حيدر 💍", p: "أوعدج من اليوم ما أخلي دمعة تنزل من عينج دائمًا.", g: "https://media.tenor.com/K_f9_9Obeo0AAAAi/hello-kitty-blushing.gif" },
-            { t: "أعشقج هواي ❤️", p: "حيدر ومارية سوا للأبد. الزعل ممنوع!", g: "https://media.tenor.com/2m_SAnzXvYgAAAAi/hello-kitty-jet-plane.gif" }
+        const story = [
+            // 1. صفحة البداية - اعتذار (مثل الصورة)
+            { t: "مارية.. اعتذر 😔", p: "أدري الزعل أخذ مساحة بقلبج، بس والله الدنيا تظلم بعيني لو ضجتي لحظة. حيدر يعتذر منج يا ملكة قلبه.", g: "https://i.pinimg.com/originals/94/3a/0d/943a0d63507663488737f5a60e1d13f9.gif", b: "ممكن تسامحيني؟ 🥺" },
+            // 2. صفحة الورد
+            { t: "يا زهرتي الحلوة 🌸", p: "انتي مو بس حبيبتي، انتي الوردة اللي بستاني. بدون ضحكتج تذبل أيامي.", g: "https://i.pinimg.com/originals/f3/d8/78/f3d87845f422ebc2d2a4f4e2f81a7b8e.gif", b: "أحبج ❤️" },
+            // 3. صفحة الذكريات
+            { t: "تذكري ضحكتنا 😍", p: "تذكري أيامنا الحلوة وسوالفنا؟ ما أريد الزعل ينسينا اللحظات اللي عشناها سوا.", g: "https://i.pinimg.com/originals/24/76/9a/24769a239b036578082f42a27891277a.gif", b: "مشتاق لج 🥺" },
+            // 4. صفحة القلب التفاعلي (مفاجأة)
+            { t: "اضغطي على قلبي ❤️", p: "حتى تعرفين شكد يحبج ويشتاقلج..", g: "https://i.pinimg.com/originals/81/2a/39/812a3920c8f9640984931a1969a53165.gif", b: "دوسي عالقلب 👇", isHeart: true },
+            // 5. صفحة الوعد
+            { t: "وعد من حيدر 💍", p: "أوعدج من اليوم ما أخلي دمعة تنزل من عينج، وراح أكون لج السند والأمان دائمًا.", g: "https://i.pinimg.com/originals/31/3b/90/313b904d9c7663d9179d636b008d5b1b.gif", b: "كملي القراءة ✨" },
+            // 6. صفحة الملكة
+            { t: "انتي الملكة 👑", p: "مارية، انتي تامرين وحيدر ينفذ. بس المهم ترجع الضحكة لوجهج المنور.", g: "https://i.pinimg.com/originals/7b/4b/f4/7b4bf49129e7102e70e9d6d843a08871.gif", b: "تؤمرين ✅" },
+            // 7. صفحة الشمس
+            { t: "يا شمس حياتي ☀️", p: "لو الدنيا كلها ضدي، يكفيني أنج وياي. أنتي النور اللي يضوي طريقي.", g: "https://i.pinimg.com/originals/74/43/e8/7443e8d77d704c7c8c8789d6d7b41e8f.gif", b: "فديتج ❤️" },
+            // 8. صفحة العشق
+            { t: "اعشقج حد الموت", p: "مارية، والله العظيم أحبج حب ما إله حدود. انتي النفس مالتي والله.", g: "https://i.pinimg.com/originals/47/4d/52/474d528b7880942f9e4e2402eb06a6c4.gif", b: "أحبك حيدر.. صافية لبن ❤️" },
+            // 9. صفحة الختام (الصلح)
+            { t: "تم الصلح بنجاح ✅", p: "حيدر ومارية سوا للأبد، والزعل ممنوع يدخل بينا بعد اليوم. أحبج ماريتي!", g: "https://i.pinimg.com/originals/24/76/9a/24769a239b036578082f42a27891277a.gif", b: "تم الصلح بنجاح ✅" }
         ];
 
         let currentIdx = 0;
         const slider = document.getElementById('slider');
 
-        data.forEach((item, i) => {
+        // توليد الصفحات برمجياً
+        story.forEach((item, i) => {
             const slide = document.createElement('div');
             slide.className = `slide ${i === 0 ? 'active' : ''}`;
             
-            let middleContent = `<div class="img-square"><img src="${item.g}"></div>`;
+            let middleContent = `<div class="img-card"><img src="${item.g}" alt="sticker"></div>`;
             if (item.isHeart) {
-                middleContent = `<div class="interactive-heart" onclick="nextSlide()">❤️</div>`;
+                middleContent = `<div class="heart-icon" onclick="nextSlide()">❤️</div>`;
             }
 
             slide.innerHTML = `
                 ${middleContent}
-                <div class="content-box">
+                <div class="content">
                     <h1>${item.t}</h1>
                     <p>${item.p}</p>
                 </div>
-                ${!item.isHeart ? `<button class="btn-action" onclick="nextSlide()">اسأليني ✨</button>` : ''}
+                ${!item.isHeart ? `<button class="btn-action" onclick="nextSlide()">${item.b}</button>` : ''}
             `;
             slider.appendChild(slide);
         });
@@ -119,16 +137,17 @@
             }
         }
 
+        // مطر القلوب
         setInterval(() => {
             const h = document.createElement('div');
-            h.className = 'heart-unit';
-            h.innerHTML = '❤️';
+            h.className = 'heart-fall'; h.innerHTML = '❤️';
             h.style.left = Math.random() * 100 + 'vw';
             h.style.top = '-50px';
+            h.style.fontSize = (Math.random() * 20 + 10) + 'px';
             h.style.animationDuration = (Math.random() * 3 + 3) + 's';
             document.getElementById('hearts').appendChild(h);
             setTimeout(() => h.remove(), 5000);
-        }, 400);
+        }, 300);
     </script>
 </body>
 </html>

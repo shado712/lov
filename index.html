@@ -6,10 +6,14 @@
     <title>إلى مارية 👑</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --transition-speed: 0.8s;
+        }
         body {
             margin: 0; font-family: 'Cairo', sans-serif;
             height: 100vh; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; background-color: #0b0b0b; color: white;
+            overflow: hidden; transition: background var(--transition-speed) ease;
+            background-color: #0b0b0b; color: white;
         }
 
         .main-wrapper {
@@ -29,52 +33,50 @@
         .slide.active { transform: translateX(0); z-index: 2; }
         .slide.prev { transform: translateX(-100%); z-index: 1; }
 
-        /* البطاقة المربعة البيضاء - مضمونة الظهور */
+        /* تصميم أنثوي للبطاقة البيضاء */
         .img-square {
-            width: 300px; height: 300px;
-            border-radius: 20px;
+            width: 280px; height: 280px;
+            border-radius: 40px; /* حواف أكثر انحناءً لتصميم أنثوي */
             overflow: hidden;
             background: #fff;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
-            margin-bottom: 30px;
+            box-shadow: 0 15px 40px rgba(255, 143, 163, 0.3); /* توهج وردي ناعم */
+            margin-bottom: 25px;
             display: flex; align-items: center; justify-content: center;
+            border: 5px solid #ffdeeb;
         }
-        .img-square img { width: 100%; height: 100%; object-fit: contain; }
+        .img-square img { width: 90%; height: 90%; object-fit: contain; }
 
-        /* القلب التفاعلي - تم تصحيحه ليكون قابل للضغط */
         .interactive-heart {
-            font-size: 120px;
-            cursor: pointer;
+            font-size: 110px; cursor: pointer;
             animation: pulse 0.8s infinite;
             filter: drop-shadow(0 0 20px #ff4d6d);
-            margin: 40px 0;
-            display: inline-block;
-            pointer-events: auto !important; /* لضمان قابلية الضغط */
-            user-select: none;
+            margin: 30px 0; display: inline-block;
+            pointer-events: auto !important;
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
-        .content-box { text-align: center; width: 85%; margin-bottom: 40px; }
-        .content-box h1 { font-size: 26px; color: #ff8fa3; margin-bottom: 10px; }
-        .content-box p { font-size: 19px; line-height: 1.6; color: #f0f0f0; margin: 0; }
+        .content-box { text-align: center; width: 85%; margin-bottom: 35px; }
+        .content-box h1 { font-size: 26px; color: #ff8fa3; margin-bottom: 10px; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .content-box p { font-size: 18px; line-height: 1.6; color: #f0f0f0; margin: 0; }
 
         .btn-action {
             background: #ff4d6d; color: white; border: none;
-            padding: 15px 50px; border-radius: 50px;
+            padding: 14px 55px; border-radius: 50px;
             font-size: 18px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.4);
-            transition: 0.3s;
-            pointer-events: auto;
+            box-shadow: 0 8px 25px rgba(255, 77, 109, 0.4);
+            transition: 0.3s; pointer-events: auto;
         }
-        .btn-action:hover { background: #ff758f; }
+
+        /* الستيكرات العشوائية الجانبية */
+        .random-sticker {
+            position: absolute; width: 60px; height: 60px;
+            pointer-events: none; z-index: 3;
+            animation: popIn 0.5s ease-out;
+        }
+        @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .hearts-bg { position: fixed; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
-        .heart-unit { position: absolute; color: rgba(255, 77, 109, 0.5); animation: drift linear infinite; }
-        @keyframes drift { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+        .heart-unit { position: absolute; animation: drift linear infinite; opacity: 0.6; }
     </style>
 </head>
 <body>
@@ -83,24 +85,28 @@
     <div class="main-wrapper" id="slider"></div>
 
     <script>
-        // روابط صور Giphy سريعة التحميل
-        const data = [
-            { t: "مارية.. اعتذر 😔", p: "أدري الزعل أخذ مساحة بقلبج، بس والله الدنيا تظلم بعيني لو ضجتي لحظة.", g: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJidWJycXJ4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9uH9T34u3U7YUnD/giphy.gif", b: "ممكن تسامحيني؟" },
-            { t: "انتي الملكة 👑", p: "مارية، انتي تامرين وحيدر ينفذ. بس المهم ترجع الضحكة لوجهج.", g: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJidWJycXJ4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/VduFvSgSPS2H4XpnhB/giphy.gif", b: "أحبج ❤️" },
-            { t: "وعد من حيدر 💍", p: "أوعدج من اليوم ما أخلي دمعة تنزل من عينج.. راح أكون السند دائمًا.", g: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJidWJycXJ4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/L4lvBpHWkARu7Aac75/giphy.gif", b: "مشتاق لج 🥺" },
-            { t: "اضغطي على قلبي ❤️", p: "حتى تعرفين شكد يحبج..", g: "", isHeart: true },
-            { t: "يا شمس حياتي ☀️", p: "انتي النور اللي يضوي طريقي. فديتج يا غالية.", g: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJidWJycXJ4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/v86vXfG1KzE3MvW5sE/giphy.gif", b: "أعشقج" },
-            { t: "حيدر ومارية سوا", p: "الزعل ممنوع من اليوم! أحبج ماريتي للأبد.", g: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJidWJycXJ4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZHF4ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/Y866z3V6Yf6WqXU8zL/giphy.gif", b: "تم الصلح بنجاح ✅" }
+        // مصفوفة البيانات مع تدرج ألوان الخلفية والستيكرات
+        const storyData = [
+            { t: "مارية.. اعتذر 😔", p: "أدري الزعل أخذ مساحة بقلبج، بس والله الدنيا تظلم بعيني لو ضجتي لحظة.", g: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3NueWZvbm41emx0bzR6cjI4dmx2Znd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/v96vXfG1KzE3MvW5sE/giphy.gif", b: "ممكن تسامحيني؟", bg: "#1a1a2e" },
+            { t: "انتي ملكة قلبي 👑", p: "انتي تامرين وحيدر ينفذ. المهم ترجع الضحكة لوجهج المنور.", g: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/VduFvSgSPS2H4XpnhB/giphy.gif", b: "تؤمرين ❤️", bg: "#2d1b33" },
+            { t: "يا وردتي 🌸", p: "انتي الوردة اللي بستاني، وبدونج الأيام ما بيها طعم.", g: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/L4lvBpHWkARu7Aac75/giphy.gif", b: "أحبج 🥺", bg: "#4a264a" },
+            { t: "اضغطي على قلبي ❤️", p: "حتى تعرفين شكد يحبج ويشتاقلج..", g: "", isHeart: true, bg: "#70305a" },
+            { t: "وعد حيدر 💍", p: "أوعدج من اليوم أكون لج السند والأمان دائمًا.", g: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9uH9T34u3U7YUnD/giphy.gif", b: "وعد؟ ✨", bg: "#9e4064" },
+            { t: "يا شمس حياتي ☀️", p: "انتي النور اللي يضوي طريقي. فديتج يا ماريتي.", g: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/Y866z3V6Yf6WqXU8zL/giphy.gif", b: "يا روحي ❤️", bg: "#c75274" },
+            { t: "انتي طفلتي 🧸", p: "مسموح لج تتنفسين وتتدللين، بس لا تبتعدين عني.", g: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/v86vXfG1KzE3MvW5sE/giphy.gif", b: "تدللين ✅", bg: "#e66c85" },
+            { t: "اعشقج هواي", p: "مارية، انتي النفس مالتي والله. أحبج حب ماله حدود.", g: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/VduFvSgSPS2H4XpnhB/giphy.gif", b: "أحبك حيدر ❤️", bg: "#ff8fa3" },
+            { t: "تم الصلح؟ 💍", p: "حيدر ومارية سوا للأبد. الزعل ممنوع من اليوم!", g: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/L4lvBpHWkARu7Aac75/giphy.gif", b: "تم الصلح ✅", bg: "#ffb3c1" },
+            { t: "النهاية السعيدة 💖", p: "يا رب دوم الضحكة على وجهج يا مارية. أحبج!", g: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2YwbXlrbnd1Ym9icDhmN3ltemc2cW5iZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9uH9T34u3U7YUnD/giphy.gif", b: "أحبك للأبد ❤️", bg: "#ffe5ec" }
         ];
 
         let currentIdx = 0;
         const slider = document.getElementById('slider');
 
-        data.forEach((item, i) => {
+        storyData.forEach((item, i) => {
             const slide = document.createElement('div');
             slide.className = `slide ${i === 0 ? 'active' : ''}`;
             
-            let middleContent = `<div class="img-square"><img src="${item.g}" alt="loading..."></div>`;
+            let middleContent = `<div class="img-square"><img src="${item.g}" alt="sticker"></div>`;
             if (item.isHeart) {
                 middleContent = `<div class="interactive-heart" onclick="nextSlide()">❤️</div>`;
             }
@@ -123,20 +129,44 @@
                 slides[currentIdx].classList.add('prev');
                 currentIdx++;
                 slides[currentIdx].classList.add('active');
+                
+                // تغيير الخلفية
+                document.body.style.backgroundColor = storyData[currentIdx].bg;
+                if (currentIdx > 7) document.body.style.color = "#333"; // تغيير لون الخط لو الخلفية صارت فاتحة
+
+                // إضافة ستيكر عشوائي
+                spawnSticker();
             } else {
-                alert("أحبج مارية! ❤️");
+                alert("تم إرسال كل الحب لقلب مارية! ❤️");
             }
         }
 
+        // دالة لإنشاء ستيكرات عشوائية تظهر فجأة
+        function spawnSticker() {
+            const stickers = ['🌸', '✨', '💖', '🧸', '🌈', '🍭'];
+            const s = document.createElement('div');
+            s.className = 'random-sticker';
+            s.innerHTML = stickers[Math.floor(Math.random() * stickers.length)];
+            s.style.fontSize = '40px';
+            s.style.left = Math.random() * 80 + 10 + 'vw';
+            s.style.top = Math.random() * 80 + 10 + 'vh';
+            document.body.appendChild(s);
+            setTimeout(() => s.remove(), 1500);
+        }
+
+        // مطر القلوب
         setInterval(() => {
             const h = document.createElement('div');
-            h.className = 'heart-unit'; h.innerHTML = '❤️';
+            h.className = 'heart-unit'; h.innerHTML = '💗';
             h.style.left = Math.random() * 100 + 'vw';
             h.style.top = '-50px';
             h.style.animationDuration = (Math.random() * 3 + 3) + 's';
             document.getElementById('hearts').appendChild(h);
             setTimeout(() => h.remove(), 5000);
         }, 400);
+
+        // تعيين لون الخلفية الأول
+        document.body.style.backgroundColor = storyData[0].bg;
     </script>
 </body>
 </html>

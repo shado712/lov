@@ -4,231 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إلى ملكة قلبي مارية 👑</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@500;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --p1: linear-gradient(135deg, #1a1a2e, #16213e);
-            --p2: linear-gradient(135deg, #4568dc, #b06ab3);
-            --p3: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            --gold: #ffd700;
-        }
-
+        :root { --gold: #ffd700; --pink: #ff4d6d; }
         body {
             margin: 0; font-family: 'Cairo', sans-serif;
             height: 100vh; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; transition: 1s ease; background: var(--p1);
+            overflow: hidden; background: #0f0c29; color: white;
         }
 
-        /* مؤثرات تساقط القلوب */
-        .particle { position: fixed; top: -50px; user-select: none; pointer-events: none; z-index: 1; animation: fall linear infinite; }
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        /* حاوية الصفحات بنظام الانزلاق */
+        .slider-container {
+            width: 85%; max-width: 400px; height: 550px;
+            position: relative; overflow: hidden;
+            border-radius: 40px; border: 2px solid var(--gold);
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        /* البطاقة الرئيسية */
-        .main-card {
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px);
-            padding: 30px; border-radius: 50px; border: 2px solid rgba(255, 255, 255, 0.3);
-            width: 85%; max-width: 400px; text-align: center; position: relative; z-index: 10;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5); animation: zoomIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .slide {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px; box-sizing: border-box;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%); /* البداية من اليمين */
         }
 
-        @keyframes zoomIn { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+        .slide.active { transform: translateX(0); } /* الصفحة النشطة */
+        .slide.prev { transform: translateX(-100%); } /* الصفحة السابقة تخرج لليسار */
 
-        /* ستيكر الصور */
-        .sticker-box {
-            width: 150px; height: 150px; margin: 0 auto 20px;
-            border-radius: 50%; border: 4px solid var(--gold);
-            background: #fff; overflow: hidden; box-shadow: 0 0 20px var(--gold);
+        /* إطار الصورة المحسن */
+        .img-frame {
+            width: 140px; height: 140px; border-radius: 50%;
+            border: 4px solid var(--gold); background: #fff;
+            margin-bottom: 20px; overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
         }
-        .sticker-box img { width: 100%; height: 100%; object-fit: cover; }
+        .img-frame img { width: 100%; height: 100%; object-fit: cover; }
 
-        h1 { font-size: 24px; color: #fff; margin-bottom: 15px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
-        p { font-size: 17px; color: #eee; line-height: 1.8; min-height: 100px; margin-bottom: 25px; font-family: 'Tajawal', sans-serif; }
+        h1 { color: var(--gold); font-size: 22px; margin-bottom: 10px; }
+        p { font-size: 16px; line-height: 1.6; text-align: center; min-height: 80px; }
 
-        /* زر تفاعلي */
-        .action-btn {
-            background: var(--gold); color: #000; border: none; padding: 15px 30px;
-            border-radius: 30px; font-size: 18px; font-weight: 900; cursor: pointer;
-            transition: 0.3s; width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        /* الأزرار التفاعلية */
+        .btn-nav {
+            background: var(--gold); color: #000; border: none;
+            padding: 15px 30px; border-radius: 30px; font-weight: bold;
+            cursor: pointer; width: 100%; transition: 0.3s;
         }
-        .action-btn:active { transform: scale(0.9); }
+        .btn-nav:hover { transform: scale(1.05); background: #fff; }
 
         /* القلب النباض التفاعلي */
-        .beating-heart {
-            font-size: 80px; color: #ff4d6d; cursor: pointer; display: none;
-            animation: beat 0.8s infinite; filter: drop-shadow(0 0 10px #ff4d6d);
+        .heart-icon {
+            font-size: 70px; color: var(--pink); cursor: pointer;
+            animation: pulse 1s infinite; margin: 10px 0;
         }
-        @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
-        .progress-dots { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
-        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.3s; }
-        .active-dot { width: 25px; background: var(--gold); border-radius: 10px; }
+        /* مطر القلوب */
+        .heart-fall { position: fixed; top: -50px; font-size: 20px; animation: fall linear infinite; z-index: -1; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div id="particles"></div>
+    <div id="rain-container"></div>
 
-    <div class="main-card">
-        <div class="sticker-box">
-            <img src="https://media.tenor.com/OnY_qNqE4p8AAAAi/hello-kitty-shy.gif" id="main-gif">
+    <div class="slider-container" id="slider">
         </div>
-        <h1 id="main-title">مارية.. زهرتي 🌸</h1>
-        <p id="main-text">أدري الزعل أخذ مساحة بقلبج، بس والله الدنيا تظلم بعيني لو ضجتي لحظة. حيدر يعتذر منج يا ملكة قلبه.</p>
-        
-        <div id="interactive-area">
-            <div class="beating-heart" id="big-heart" onclick="heartPop()">❤️</div>
-        </div>
-
-        <button class="action-btn" onclick="nextPage()" id="btn-text">ممكن تسامحيني؟ 🥺</button>
-
-        <div class="progress-dots" id="dots-container"></div>
-    </div>
 
     <script>
-        // نظام الصفحات والرسائل
         const story = [
-            { 
-                t: "مارية.. اعتذر 😔", 
-                p: "ما كان قصدي أجرحج، أنتي أغلى شي عندي بالكون. سامحيني يا روح حيدر.", 
-                g: "https://media.tenor.com/b9UaH8B6_OQAAAAi/mochi-peach.gif",
-                bg: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
-                btn: "نكمل؟ ✨"
-            },
-            { 
-                t: "انتي زهرتي 🌸", 
-                p: "أنتي مو بس حبيبتي، أنتي الوردة اللي بستاني. بدون ضحكتج ذبلت أيامي.", 
-                g: "https://media.tenor.com/vH97Zf_9680AAAAi/hello-kitty-flower.gif",
-                bg: "linear-gradient(135deg, #74ebd5, #9face6)",
-                btn: "أحبج ❤️"
-            },
-            { 
-                t: "تذكري أيامنا 😍", 
-                p: "تذكري ضحكتنا وسوالفنا؟ ما أريد الزعل ينسينا هاي اللحظات الحلوة اللي عشناها سوا.", 
-                g: "https://media.tenor.com/Z45Z1A7_0mUAAAAi/hello-kitty.gif",
-                bg: "linear-gradient(135deg, #ff9a9e, #fecfef)",
-                btn: "مشتاق لج 🥺"
-            },
-            { 
-                t: "وعد من حيدر 💍", 
-                p: "أوعدج من اليوم ما أخلي دمعة تنزل من عينج، وراح أكون لج السند والأمان دائمًا.", 
-                g: "https://media.tenor.com/K_f9_9Obeo0AAAAi/hello-kitty-blushing.gif",
-                bg: "linear-gradient(135deg, #a18cd1, #fbc2eb)",
-                btn: "دوسي عالقلب 👇"
-            },
-            { 
-                t: "قلبي ينبض بإسمج", 
-                p: "دوسي على هذا القلب وشوفي شكد يحبج يا مارية..", 
-                g: "https://media.tenor.com/V7_5zWv-A60AAAAi/hello-kitty-love.gif",
-                bg: "linear-gradient(135deg, #2c3e50, #000000)",
-                btn: "صار أحسن؟",
-                special: "heart"
-            },
-            { 
-                t: "انتي الملكة 👑", 
-                p: "مارية، أنتي تامرين وحيدر ينفذ. بس المهم ترجع الضحكة لوجهج المنور.", 
-                g: "https://media.tenor.com/A6_L6R5v_OAAAAAi/cat-working.gif",
-                bg: "linear-gradient(135deg, #f093fb, #f5576c)",
-                btn: "كملي القراءة 😍"
-            },
-            { 
-                t: "يا شمس حياتي ☀️", 
-                p: "لو الدنيا كلها ضدي، يكفيني أنج وياي. أنتي النور اللي يضوي طريقي.", 
-                g: "https://media.tenor.com/R3K98H6pU1EAAAAi/cute-rabbit.gif",
-                bg: "linear-gradient(135deg, #f6d365, #fda085)",
-                btn: "فديتج ❤️"
-            },
-            { 
-                t: "بنيتي الصغيرة 🧸", 
-                p: "أنتي طفلتي المدللة، ومسموح لج تزعلين وتتدللين، بس لا تبتعدين عني.", 
-                g: "https://media.tenor.com/j_6W_Xq-S0AAAAAi/hello-kitty-sanrio.gif",
-                bg: "linear-gradient(135deg, #e0c3fc, #8ec5fc)",
-                btn: "بقت صفحتين.. ✨"
-            },
-            { 
-                t: "اعشقج حد الموت", 
-                p: "مارية، والله العظيم أحبج حب ما إله حدود. انتي النفس مالتي والله.", 
-                g: "https://media.tenor.com/2m_SAnzXvYgAAAAi/hello-kitty-jet-plane.gif",
-                bg: "linear-gradient(135deg, #667eea, #764ba2)",
-                btn: "آخر ضغطة ❤️"
-            },
-            { 
-                t: "توقيع بالحب ❤️", 
-                p: "رسمياً: حيدر ومارية سوا للأبد. والزعل ممنوع يدخل بينا بعد اليوم. أحبج ماريتي!", 
-                g: "https://media.tenor.com/OnvS5O4Vn4AAAAAi/study-busy.gif",
-                bg: "linear-gradient(135deg, #ff0844, #ffb199)",
-                btn: "تم الصلح بنجاح ✅"
-            }
+            { t: "مارية.. اعتذر 😔", p: "أدري الزعل أخذ مساحة بقلبج، بس والله الدنيا تظلم بعيني لو ضجتي لحظة. حيدر يعتذر منج يا ملكة قلبه.", g: "https://media.tenor.com/b9UaH8B6_OQAAAAi/mochi-peach.gif" },
+            { t: "انتي زهرتي 🌸", p: "أنتي مو بس حبيبتي، أنتي الوردة اللي بستاني. بدون ضحكتج ذبلت أيامي.", g: "https://media.tenor.com/vH97Zf_9680AAAAi/hello-kitty-flower.gif" },
+            { t: "تذكري أيامنا 😍", p: "تذكري ضحكتنا وسوالفنا؟ ما أريد الزعل ينسينا هاي اللحظات الحلوة اللي عشناها سوا.", g: "https://media.tenor.com/Z45Z1A7_0mUAAAAi/hello-kitty.gif" },
+            { t: "قلبي يحبج ❤️", p: "دوسي على القلب وشوفي شكد يشتاقلج..", g: "https://media.tenor.com/V7_5zWv-A60AAAAi/hello-kitty-love.gif", special: "heart" },
+            { t: "وعد من حيدر 💍", p: "أوعدج من اليوم ما أخلي دمعة تنزل من عينج، وراح أكون لج السند والأمان دائمًا.", g: "https://media.tenor.com/K_f9_9Obeo0AAAAi/hello-kitty-blushing.gif" },
+            { t: "انتي الملكة 👑", p: "مارية، أنتي تامرين وحيدر ينفذ. بس المهم ترجع الضحكة لوجهج المنور.", g: "https://media.tenor.com/A6_L6R5v_OAAAAAi/cat-working.gif" },
+            { t: "يا شمس حياتي ☀️", p: "لو الدنيا كلها ضدي، يكفيني أنج وياي. أنتي النور اللي يضوي طريقي.", g: "https://media.tenor.com/R3K98H6pU1EAAAAi/cute-rabbit.gif" },
+            { t: "بنيتي الصغيرة 🧸", p: "أنتي طفلتي المدللة، ومسموح لج تزعلين وتتدللين، بس لا تبتعدين عني.", g: "https://media.tenor.com/j_6W_Xq-S0AAAAAi/hello-kitty-sanrio.gif" },
+            { t: "اعشقج هواي", p: "مارية، والله العظيم أحبج حب ما إله حدود. انتي النفس مالتي والله.", g: "https://media.tenor.com/2m_SAnzXvYgAAAAi/hello-kitty-jet-plane.gif" },
+            { t: "تم الصلح؟ ❤️", p: "رسمياً: حيدر ومارية سوا للأبد. الزعل ممنوع من اليوم! أحبج ماريتي!", g: "https://media.tenor.com/OnvS5O4Vn4AAAAAi/study-busy.gif" }
         ];
 
-        let currentPage = 0;
+        const slider = document.getElementById('slider');
+        let currentIdx = 0;
 
-        // صنع النقاط
-        const dotsContainer = document.getElementById('dots-container');
-        story.forEach((_, i) => {
-            const dot = document.createElement('div');
-            dot.className = `dot ${i === 0 ? 'active-dot' : ''}`;
-            dotsContainer.appendChild(dot);
+        // توليد الصفحات
+        story.forEach((item, i) => {
+            const slide = document.createElement('div');
+            slide.className = `slide ${i === 0 ? 'active' : ''}`;
+            slide.innerHTML = `
+                <div class="img-frame"><img src="${item.g}" alt="sticker"></div>
+                <h1>${item.t}</h1>
+                ${item.special === 'heart' ? '<div class="heart-icon" onclick="next()">❤️</div>' : `<p>${item.p}</p>`}
+                <button class="btn-nav" onclick="next()">${i === story.length -1 ? 'أحبك للأبد' : 'ممكن تسامحيني؟ 🥺'}</button>
+            `;
+            slider.appendChild(slide);
         });
 
-        function nextPage() {
-            if (currentPage < story.length - 1) {
-                currentPage++;
-                updatePage();
+        function next() {
+            const slides = document.querySelectorAll('.slide');
+            if (currentIdx < slides.length - 1) {
+                slides[currentIdx].classList.remove('active');
+                slides[currentIdx].classList.add('prev');
+                currentIdx++;
+                slides[currentIdx].classList.add('active');
             } else {
-                alert("تم إرسال كل الحب لقلب مارية! ❤️");
+                alert("تم الصلح بنجاح! ❤️");
             }
         }
 
-        function updatePage() {
-            const data = story[currentPage];
-            document.body.style.background = data.bg;
-            document.getElementById('main-title').innerText = data.t;
-            document.getElementById('main-text').innerText = data.p;
-            document.getElementById('main-gif').src = data.g;
-            document.getElementById('btn-text').innerText = data.btn;
-
-            // إخفاء/إظهار القلب
-            if (data.special === "heart") {
-                document.getElementById('big-heart').style.display = "block";
-                document.getElementById('main-text').style.display = "none";
-            } else {
-                document.getElementById('big-heart').style.display = "none";
-                document.getElementById('main-text').style.display = "block";
-            }
-
-            // تحديث النقاط
-            const dots = document.querySelectorAll('.dot');
-            dots.forEach((d, i) => {
-                d.className = i === currentPage ? 'dot active-dot' : 'dot';
-            });
-
-            // تغيير نوع المطر
-            createParticles(currentPage % 2 === 0 ? '❤️' : '✨');
-        }
-
-        function heartPop() {
-            alert("حسيتي بنبض قلبي شكد يحبج؟ ❤️");
-            nextPage();
-        }
-
-        // صنع القلوب والنجوم المتساقطة
-        function createParticles(symbol) {
-            const container = document.getElementById('particles');
-            container.innerHTML = "";
-            for (let i = 0; i < 20; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.innerHTML = symbol;
-                p.style.left = Math.random() * 100 + 'vw';
-                p.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                p.style.fontSize = (Math.random() * 20 + 10) + 'px';
-                container.appendChild(p);
-            }
-        }
-
-        createParticles('❤️');
+        // مطر القلوب
+        setInterval(() => {
+            const h = document.createElement('div');
+            h.className = 'heart-fall';
+            h.innerHTML = '❤️';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.getElementById('rain-container').appendChild(h);
+            setTimeout(() => h.remove(), 4000);
+        }, 300);
     </script>
 </body>
 </html>
